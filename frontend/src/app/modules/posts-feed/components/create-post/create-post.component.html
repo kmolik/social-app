@@ -1,6 +1,6 @@
-<h1 mat-dialog-title>New post</h1>
+<h1 mat-dialog-title>{{this.data ? "Update" : "Create"}}</h1>
 <div mat-dialog-content>
-  <form [formGroup]="postForm">
+  <form [formGroup]="form">
     <div class="form-group">
       <label for="title">Title</label>
       <input type="text" class="form-control" id="title" formControlName="title">
@@ -9,9 +9,13 @@
       <label for="content">Content</label>
       <textarea class="form-control" id="content" formControlName="content"></textarea>
     </div>
+    <div class="form-group">
+      <label for="image">Title</label>
+      <input type="file" class="form-control" id="image" (change)="onFileSelect($event)"/>
+    </div>
   </form>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="closeDialog()">Close</button>
-  <button mat-button (click)="submitForm()">Create</button>
+  <button mat-button (click)="submitForm()">{{this.data ? "Update" : "Create"}}</button>
 </div>

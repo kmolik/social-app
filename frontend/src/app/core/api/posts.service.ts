@@ -19,7 +19,15 @@ export class PostsService {
     return this.http.get<Post>(`${this.apiUrl}/posts/${id}`);
   }
 
-  public createPost(post: Post): Observable<Post> {
-    return this.http.post<Post>(`${this.apiUrl}/posts`, post);
+  public createPost(createPost: FormData): Observable<FormData> {
+    return this.http.post<FormData>(`${this.apiUrl}/posts`, createPost);
+  }
+
+  public updatePost(updatePost: FormData | Post, id: number): Observable<FormData | Post> {
+    return this.http.put<FormData | Post>(`${this.apiUrl}/posts/${id}`, updatePost);
+  }
+
+  public deletePost(id: number): Observable<Post> {
+    return this.http.delete<Post>(`${this.apiUrl}/posts/${id}`);
   }
 }

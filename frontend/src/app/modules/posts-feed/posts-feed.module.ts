@@ -7,6 +7,7 @@ import { CreatePostComponent } from './components/create-post/create-post.compon
 import {CoreModule} from "../../core/core.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
+import { ViewPostComponent } from './components/view-post/view-post.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import {MatDialogRef} from "@angular/material/dialog";
   ],
   declarations: [
     PostListComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    ViewPostComponent
   ],
   imports: [
     CommonModule,

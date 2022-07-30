@@ -3,6 +3,7 @@ import {PostsService} from "../../../../core/api/posts.service";
 import {Post} from "../../../../core/models/post";
 import {MatDialog} from "@angular/material/dialog";
 import {CreatePostComponent} from "../create-post/create-post.component";
+import {ViewPostComponent} from "../view-post/view-post.component";
 
 @Component({
   selector: 'app-post-list',
@@ -40,9 +41,27 @@ export class PostListComponent implements OnInit {
       });
   }
 
-  getPost(id: number) {
-    this.postsService.getPost(id).subscribe(post => {
-      console.log(post);
+  viewPost(id: number) {
+    this.dialog.open(ViewPostComponent, {
+        width: '500px',
+        data: id,
+      })
+  }
+
+  editPost(id: number) {
+    this.dialog.open(CreatePostComponent, {
+        width: '500px',
+        data: id,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.getPosts();
+      });
+  }
+
+  deletePost(id: number) {
+    this.postsService.deletePost(id).subscribe(() => {
+      this.getPosts();
     });
   }
 }

@@ -3,6 +3,7 @@ export interface Post {
   title: string;
   content: string;
   imageUrl?: string;
+  image?: any;
   creator?: {
     name: string;
   }
