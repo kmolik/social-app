@@ -10,6 +10,10 @@ const routes: Routes = [
   {
     path: 'feed',
     loadChildren : () => import('./modules/posts-feed/posts-feed.module').then(m => m.PostsFeedModule)
+  },
+  {
+    path: 'unauthorized',
+    loadChildren : () => import('./modules/unauthorized/unauthorized.module').then(m => m.UnauthorizedModule)
   }
 ];
 

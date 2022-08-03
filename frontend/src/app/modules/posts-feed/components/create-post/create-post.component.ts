@@ -11,7 +11,7 @@ import {Post} from "../../../../core/models/post";
 })
 export class CreatePostComponent implements OnInit {
 
-  form!: FormGroup;
+  form: FormGroup;
   selectedFile: File | null = null;
   post: Post | null = null;
 
@@ -20,20 +20,13 @@ export class CreatePostComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: number,
     private postsService: PostsService,
     private fb: FormBuilder,
-  ) { }
+  ) {
+    this.form = this.generateForm();
+  }
 
   ngOnInit(): void {
-    this.generateForm();
     if(this.data) this.getPost(this.data);
   }
-
-  generateForm() {
-    this.form = this.fb.group({
-      title: [''],
-      content: [''],
-    });
-  }
-
 
   submitForm() {
     if(this.data) this.updatePost();
@@ -48,7 +41,41 @@ export class CreatePostComponent implements OnInit {
     }
   }
 
-  getPost(id: number) {
+  createPost() {
+    this.postsService.createPost(this.createPostFormData()).subscribe(() => {
+      this.closeDialog()
+    });
+  }
+
+  updatePost() {
+    const postData = this.selectedFile ? this.createPostFormData() : this.createUpdatePost();
+
+    this.postsService.updatePost(postData, this.data).subscribe(() => {
+      this.closeDialog()
+    });
+    }
+
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
+  private createPostFormData(): FormData {
+    const formData = new FormData();
+    formData.append('image', this.selectedFile!, this.selectedFile?.name);
+    formData.append('title', this.form.value.title);
+    formData.append('content', this.form.value.content);
+    return formData;
+  }
+
+  private createUpdatePost(): Post {
+    return {
+      title: this.form.value.title,
+      content: this.form.value.content,
+      image: this.post?.imageUrl,
+    };
+  }
+
+  private getPost(id: number) {
     if(!this.data) return;
     this.postsService.getPost(id).subscribe(post => {
       this.post = post;
@@ -59,46 +86,10 @@ export class CreatePostComponent implements OnInit {
     });
   }
 
-  createPost() {
-    const formData = new FormData();
-    if(!this.selectedFile) return;
-    formData.append('image', this.selectedFile, this.selectedFile?.name);
-    formData.append('title', this.form.value.title);
-    formData.append('content', this.form.value.content);
-
-    this.postsService.createPost(formData).subscribe((err) => {
-
-      console.log(err);
-      this.dialogRef.close();
+  private generateForm(): FormGroup {
+    return  this.fb.group({
+      title: [''],
+      content: [''],
     });
   }
-
-  updatePost() {
-    const formData = new FormData();
-    let updatedPost: Post = {
-      title: this.form.value.title,
-      content: this.form.value.content,
-      image: this.post?.imageUrl,
-    };
-    if(!this.selectedFile) {
-      this.postsService.updatePost(updatedPost, this.data).subscribe((err) => {
-        console.log(err);
-        this.dialogRef.close();
-      });
-    } else {
-        formData.append('image', this.selectedFile!, this.selectedFile?.name);
-        formData.append('title', this.form.value.title);
-        formData.append('content', this.form.value.content);
-
-        this.postsService.updatePost(formData, this.data).subscribe((err) => {
-          console.log(err);
-          this.dialogRef.close();
-        });
-      }
-    }
-
-  closeDialog() {
-    this.dialogRef.close();
-  }
-
 }
