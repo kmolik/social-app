@@ -10,6 +10,7 @@ router.get('/posts', isAuth, feedController.getPosts);
 
 router.post(
   '/posts',
+
   [
     body('title')
       .trim()
@@ -18,6 +19,7 @@ router.post(
       .trim()
       .isLength({ min: 5 })
   ],
+  isAuth,
   feedController.createPost
 );
 
@@ -33,8 +35,10 @@ router.put(
             .trim()
             .isLength({ min: 5 })
     ],
-    feedController.updatePost);
+    isAuth,
+    feedController.updatePost
+);
 
-router.delete('/posts/:postId', feedController.deletePost);
+router.delete('/posts/:postId', isAuth, feedController.deletePost);
 
 module.exports = router;
