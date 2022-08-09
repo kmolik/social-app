@@ -5,11 +5,15 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const { createServer } = require('http');
 
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 
+
 const app = express();
+const httpServer = createServer(app);
+const io = require('./socket/socket').init(httpServer);
 const mongoUrl = 'mongodb+srv://user:L0rdR3van@node-shop.vtbu2.mongodb.net/messages?retryWrites=true';
 
 const storage = multer.diskStorage({
@@ -59,9 +63,12 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(mongoUrl)
   .then(() => {
-    console.log('Connected to database!');
-    app.listen(8080, () => {
-      console.log('Server is running on port 8080');
+      io.on('connection', socket => {
+            console.log('Socket connected');
+            socket.on('disconnect', () => console.log('Socket disconnected'));
+      })
+    httpServer.listen(8080, () => {
+        console.log('listening on port 8080');
     });
   })
   .catch(err => console.log(err));

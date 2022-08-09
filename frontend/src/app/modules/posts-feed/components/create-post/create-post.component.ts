@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {PostsService} from "../../../../core/api/posts.service";
 import {Post} from "../../../../core/models/post";
+import {SocketService} from "../../../../core/services/socket.service";
 
 @Component({
   selector: 'app-create-post',
@@ -20,6 +21,7 @@ export class CreatePostComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: number,
     private postsService: PostsService,
     private fb: FormBuilder,
+    private socketService: SocketService
   ) {
     this.form = this.generateForm();
   }
@@ -51,6 +53,7 @@ export class CreatePostComponent implements OnInit {
     const postData = this.selectedFile ? this.createPostFormData() : this.createUpdatePost();
 
     this.postsService.updatePost(postData, this.data).subscribe(() => {
+      this.socketGetMessage();
       this.closeDialog()
     });
     }
@@ -90,6 +93,12 @@ export class CreatePostComponent implements OnInit {
     return  this.fb.group({
       title: [''],
       content: [''],
+    });
+  }
+
+  private socketGetMessage() {
+    this.socketService.getMessage().subscribe((message: any) => {
+      console.log(message);
     });
   }
 }
