@@ -8,6 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from "./core/core.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import {authInterceptorProviders} from "./core/authentication/helpers/auth.interceptor";
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {authInterceptorProviders} from "./core/authentication/helpers/auth.inter
     HttpClientModule,
     NoopAnimationsModule,
     CoreModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    GraphQLModule
   ],
   providers: [authInterceptorProviders],
   bootstrap: [AppComponent]

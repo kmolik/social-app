@@ -5,9 +5,12 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const { graphqlHTTP } = require('express-graphql');
 
-const feedRoutes = require('./routes/feed');
-const authRoutes = require('./routes/auth');
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolvers = require('./graphql/resolvers');
+const auth = require('./middleware/auth');
+
 
 const app = express();
 const mongoUrl = 'mongodb+srv://user:L0rdR3van@node-shop.vtbu2.mongodb.net/messages?retryWrites=true';
@@ -45,8 +48,23 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/feed', feedRoutes);
-app.use('/auth', authRoutes);
+app.use(auth);
+
+app.use('/graphql', graphqlHTTP({
+    schema: graphqlSchema,
+    rootValue: graphqlResolvers,
+    graphiql: true,
+    customFormatErrorFn(err) {
+        if (!err.originalError) {
+            return err;
+        }
+        const data = err.originalError.data;
+        const message = err.message || 'An error occurred.';
+        const code = err.originalError.code || 500;
+        return { message: message, status: code, data: data };
+    }
+}));
+
 
 app.use((error, req, res, next) => {
     console.log(error);
