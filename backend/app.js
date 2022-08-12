@@ -10,7 +10,7 @@ const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 
 const app = express();
-const mongoUrl = 'mongodb+srv://user:L0rdR3van@node-shop.vtbu2.mongodb.net/messages?retryWrites=true';
+const mongoUrl = `mongodb+srv://user:L0rdR3van@node-shop.vtbu2.mongodb.net/messages?retryWrites=true`;
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
